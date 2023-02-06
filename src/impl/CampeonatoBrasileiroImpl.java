@@ -77,14 +77,6 @@ public class CampeonatoBrasileiroImpl {
                 .summaryStatistics();
     }
 
-    public Map<Jogo, Integer> getMediaGolsPorJogo() {
-        return null;
-    }
-
-    public IntSummaryStatistics GetEstatisticasPorJogo() {
-        return null;
-    }
-
     public List<Jogo> todosOsJogos() {
         return this.brasileirao
                 .values()
@@ -152,9 +144,6 @@ public class CampeonatoBrasileiroImpl {
                 .get();
     }
 
-    private List<Time> getTodosOsTimes() {
-        return null;
-    }
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoMandantes() {
         return todosOsJogos()
@@ -208,12 +197,16 @@ public class CampeonatoBrasileiroImpl {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private Long golsFeitosPeloTime(Time time){
-        return getJogosParticionadosPorMandanteTrueVisitanteFalse()
+    private Stream<Map.Entry<Boolean, List<Jogo>>> getJogosParticionadosPorMandanteTrueVisitanteFalseFiltrado(Time time){
+         return getJogosParticionadosPorMandanteTrueVisitanteFalse()
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().equals(time))
-                .flatMap(entry -> entry.getValue().entrySet().stream())
+                .flatMap(entry -> entry.getValue().entrySet().stream());
+    }
+
+    private Long golsFeitosPeloTime(Time time){
+        return getJogosParticionadosPorMandanteTrueVisitanteFalseFiltrado(time)
                 .mapToLong(entry -> {
                     long somaGols = 0L;
                     if(entry.getKey())
@@ -225,11 +218,7 @@ public class CampeonatoBrasileiroImpl {
     }
 
     private Long golsSofridosPeloTime(Time time){
-        return getJogosParticionadosPorMandanteTrueVisitanteFalse()
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals(time))
-                .flatMap(entry -> entry.getValue().entrySet().stream())
+        return getJogosParticionadosPorMandanteTrueVisitanteFalseFiltrado(time)
                 .mapToLong(entry -> {
                     long somaGolsSofridos = 0L;
                     if(entry.getKey())
@@ -255,22 +244,4 @@ public class CampeonatoBrasileiroImpl {
             return posicao2.vitorias().compareTo(posicao1.vitorias());
         };
     }
-
-    private DayOfWeek getDayOfWeek(String dia) {
-        return null;
-    }
-
-    private Map<Integer, Integer> getTotalGolsPorRodada() {
-        return null;
-    }
-
-    private Map<Time, Integer> getTotalDeGolsPorTime() {
-        return null;
-    }
-
-    private Map<Integer, Double> getMediaDeGolsPorRodada() {
-        return null;
-    }
-
-
 }
