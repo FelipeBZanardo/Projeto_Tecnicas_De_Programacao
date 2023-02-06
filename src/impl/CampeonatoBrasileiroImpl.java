@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CampeonatoBrasileiroImpl {
 
@@ -156,23 +157,103 @@ public class CampeonatoBrasileiroImpl {
     }
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoMandantes() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        Jogo::mandante));
     }
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoVisitante() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        Jogo::visitante));
     }
 
     public Map<Time, List<Jogo>> getTodosOsJogosPorTime() {
-        return null;
+        return Stream.of(getTodosOsJogosPorTimeComoVisitante(), getTodosOsJogosPorTimeComoMandantes())
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (lista1, lista2) -> {
+                            lista1.addAll(lista2);
+                            return lista1;}));
     }
 
     public Map<Time, Map<Boolean, List<Jogo>>> getJogosParticionadosPorMandanteTrueVisitanteFalse() {
-        return null;
+        return Stream.of(getTodosOsJogosPorTime())
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream().collect(
+                                Collectors.partitioningBy(jogo -> jogo.mandante().equals(entry.getKey()))
+                        )));
     }
 
     public Set<PosicaoTabela> getTabela() {
-        return null;
+        return getTodosOsJogosPorTime().entrySet()
+                .stream()
+                .map(entry -> new PosicaoTabela(entry.getKey(),
+                        entry.getValue().stream().filter(jogo -> jogo.vencedor().equals(entry.getKey())).count(),
+                        entry.getValue().stream().filter(jogo ->
+                                (!jogo.vencedor().equals(entry.getKey()) &&
+                                        !jogo.vencedor().equals(new Time("-")))).count(),
+                        entry.getValue().stream().filter(jogo -> jogo.vencedor().equals(new Time("-"))).count(),
+                        golsFeitosPeloTime(entry.getKey()),
+                        golsSofridosPeloTime(entry.getKey()),
+                        saldoGolsDoTime(entry.getKey()),
+                        entry.getValue().stream().count()))
+                .sorted(posicaoTabelaComparator())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Long golsFeitosPeloTime(Time time){
+        return getJogosParticionadosPorMandanteTrueVisitanteFalse()
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals(time))
+                .flatMap(entry -> entry.getValue().entrySet().stream())
+                .mapToLong(entry -> {
+                    long somaGols = 0L;
+                    if(entry.getKey())
+                        somaGols += entry.getValue().stream().mapToLong(Jogo::mandantePlacar).sum();
+                    if(!entry.getKey())
+                        somaGols += entry.getValue().stream().mapToLong(Jogo::visitantePlacar).sum();
+                    return somaGols;})
+                .sum();
+    }
+
+    private Long golsSofridosPeloTime(Time time){
+        return getJogosParticionadosPorMandanteTrueVisitanteFalse()
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals(time))
+                .flatMap(entry -> entry.getValue().entrySet().stream())
+                .mapToLong(entry -> {
+                    long somaGolsSofridos = 0L;
+                    if(entry.getKey())
+                        somaGolsSofridos += entry.getValue().stream().mapToLong(Jogo::visitantePlacar).sum();
+                    if(!entry.getKey())
+                        somaGolsSofridos += entry.getValue().stream().mapToLong(Jogo::mandantePlacar).sum();
+                    return somaGolsSofridos;})
+                .sum();
+    }
+
+    private Long saldoGolsDoTime(Time time){
+        return golsFeitosPeloTime(time) - golsSofridosPeloTime(time);
+    }
+
+    private Comparator<PosicaoTabela> posicaoTabelaComparator(){
+        return (PosicaoTabela posicao1, PosicaoTabela posicao2) -> {
+            Long pontos1 = posicao1.vitorias() * 3 + posicao1.empates();
+            Long pontos2 = posicao2.vitorias() * 3 + posicao2.empates();
+            long comparePontos = pontos2.compareTo(pontos1);
+            if (comparePontos != 0)
+                return Math.toIntExact(comparePontos);
+
+            return posicao2.vitorias().compareTo(posicao1.vitorias());
+        };
     }
 
     private DayOfWeek getDayOfWeek(String dia) {
