@@ -10,10 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -73,7 +70,10 @@ public class CampeonatoBrasileiroImpl {
     }
 
     public IntSummaryStatistics getEstatisticasPorJogo() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .mapToInt(jogo -> jogo.mandantePlacar() + jogo.visitantePlacar())
+                .summaryStatistics();
     }
 
     public Map<Jogo, Integer> getMediaGolsPorJogo() {
@@ -85,39 +85,70 @@ public class CampeonatoBrasileiroImpl {
     }
 
     public List<Jogo> todosOsJogos() {
-        return null;
+        return this.brasileirao
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     public Long getTotalVitoriasEmCasa() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .filter(jogo -> jogo.mandantePlacar() > jogo.visitantePlacar())
+                .count();
     }
 
     public Long getTotalVitoriasForaDeCasa() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .filter(jogo -> jogo.visitantePlacar() > jogo.mandantePlacar())
+                .count();
     }
 
     public Long getTotalEmpates() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .filter(jogo -> jogo.mandantePlacar().equals(jogo.visitantePlacar()))
+                .count();
     }
 
     public Long getTotalJogosComMenosDe3Gols() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .filter(jogo -> (jogo.mandantePlacar() + jogo.visitantePlacar()) < 3)
+                .count();
     }
 
     public Long getTotalJogosCom3OuMaisGols() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .filter(jogo -> (jogo.mandantePlacar() + jogo.visitantePlacar()) >= 3)
+                .count();
     }
 
     public Map<Resultado, Long> getTodosOsPlacares() {
-        return null;
+        return todosOsJogos()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        jogo -> new Resultado(jogo.mandantePlacar(), jogo.visitantePlacar()),
+                        Collectors.counting()));
     }
 
     public Map.Entry<Resultado, Long> getPlacarMaisRepetido() {
-        return null;
+        return getTodosOsPlacares()
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .get();
     }
 
     public Map.Entry<Resultado, Long> getPlacarMenosRepetido() {
-        return null;
+        return getTodosOsPlacares()
+                .entrySet()
+                .stream()
+                .min(Map.Entry.comparingByValue())
+                .get();
     }
 
     private List<Time> getTodosOsTimes() {
