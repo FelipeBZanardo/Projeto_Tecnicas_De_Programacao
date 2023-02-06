@@ -1,13 +1,15 @@
 package impl;
 
-import dominio.Jogo;
-import dominio.PosicaoTabela;
-import dominio.Resultado;
-import dominio.Time;
+import dominio.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,40 @@ public class CampeonatoBrasileiroImpl {
     }
 
     public List<Jogo> lerArquivo(Path file) throws IOException {
-        return null;
+        List<String> linhasLidas = Files.readAllLines(file);
+        return linhasLidas.stream()
+                .skip(1)
+                .map(linha -> linha.split(";"))
+                .map(this::obterJogo)
+                .toList();
+    }
+
+    private Jogo obterJogo(String[] atributosJogo){
+        return new Jogo(Integer.parseInt(atributosJogo[0]),
+                obterDataDoJogo(atributosJogo[1],atributosJogo[2],atributosJogo[3]),
+                new Time(atributosJogo[4]),
+                new Time(atributosJogo[5]),
+                new Time(atributosJogo[6]),
+                atributosJogo[7],
+                Integer.parseInt(atributosJogo[8]),
+                Integer.parseInt(atributosJogo[9]),
+                atributosJogo[10],
+                atributosJogo[11],
+                atributosJogo[12]);
+    }
+
+    private DataDoJogo obterDataDoJogo(String data, String hora, String dia){
+        DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("HH:mm");
+        LocalDate dataLocalDate = LocalDate.parse(data, formatterData);
+        LocalTime horaLocalTime;
+        try{
+            horaLocalTime = LocalTime.parse(hora.replace('h', ':'), formatterHora);
+        } catch (DateTimeParseException e){
+            horaLocalTime = null;
+        }
+        DayOfWeek diaDaSemana = DiaDaSemana.DIA_DA_SEMANA.obterDiaDaSemana(dia);
+        return new DataDoJogo(dataLocalDate, horaLocalTime, diaDaSemana);
     }
 
     public IntSummaryStatistics getEstatisticasPorJogo() {
