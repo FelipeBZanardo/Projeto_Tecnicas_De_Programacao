@@ -240,8 +240,17 @@ public class CampeonatoBrasileiroImpl {
             long comparePontos = pontos2.compareTo(pontos1);
             if (comparePontos != 0)
                 return Math.toIntExact(comparePontos);
+            long compareVitorias = posicao2.vitorias().compareTo(posicao1.vitorias());
+            if (compareVitorias != 0)
+                return Math.toIntExact(compareVitorias);
+            long compareSaldo = posicao2.saldoDeGols().compareTo(posicao1.saldoDeGols());
+            if (compareSaldo != 0)
+                return Math.toIntExact(compareSaldo);
 
-            return posicao2.vitorias().compareTo(posicao1.vitorias());
+            return posicao2.golsPositivos().compareTo(posicao1.golsPositivos());
         };
     }
+
+
+
 }
