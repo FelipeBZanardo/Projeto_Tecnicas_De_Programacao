@@ -194,7 +194,8 @@ public class CampeonatoBrasileiroImpl {
                         golsFeitosPeloTime(time),
                         golsSofridosPeloTime(time),
                         saldoGolsDoTime(time),
-                        (long) getTodosOsJogosPorTime().get(time).size()))
+                        (long) getTodosOsJogosPorTime().get(time).size(),
+                        (vitoriasTime(time) * 3 + empatesTime(time))))
                 .sorted(posicaoTabelaComparator())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
