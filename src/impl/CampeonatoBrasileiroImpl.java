@@ -144,6 +144,18 @@ public class CampeonatoBrasileiroImpl {
                 .get();
     }
 
+    private List<Time> getTodosOsTimes() {
+
+        return this.brasileirao
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .map(Jogo::mandante)
+                .collect(Collectors.toSet())
+                .stream()
+                .toList();
+    }
+
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoMandantes() {
         return todosOsJogos()
@@ -181,20 +193,43 @@ public class CampeonatoBrasileiroImpl {
     }
 
     public Set<PosicaoTabela> getTabela() {
-        return getTodosOsJogosPorTime().entrySet()
-                .stream()
-                .map(entry -> new PosicaoTabela(entry.getKey(),
-                        entry.getValue().stream().filter(jogo -> jogo.vencedor().equals(entry.getKey())).count(),
-                        entry.getValue().stream().filter(jogo ->
-                                (!jogo.vencedor().equals(entry.getKey()) &&
-                                        !jogo.vencedor().equals(new Time("-")))).count(),
-                        entry.getValue().stream().filter(jogo -> jogo.vencedor().equals(new Time("-"))).count(),
-                        golsFeitosPeloTime(entry.getKey()),
-                        golsSofridosPeloTime(entry.getKey()),
-                        saldoGolsDoTime(entry.getKey()),
-                        entry.getValue().stream().count()))
+
+        return getTodosOsTimes().stream()
+                .map(time -> new PosicaoTabela(time,
+                        vitoriasTime(time),
+                        derrotasTime(time),
+                        empatesTime(time),
+                        golsFeitosPeloTime(time),
+                        golsSofridosPeloTime(time),
+                        saldoGolsDoTime(time),
+                        (long) getTodosOsJogosPorTime().get(time).size()))
                 .sorted(posicaoTabelaComparator())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Long vitoriasTime(Time time){
+        return getTodosOsJogosPorTime()
+                .get(time)
+                .stream()
+                .filter(jogo -> jogo.vencedor().equals(time))
+                .count();
+    }
+
+    private Long empatesTime(Time time){
+        return getTodosOsJogosPorTime()
+                .get(time)
+                .stream()
+                .filter(jogo -> jogo.vencedor().equals(new Time("-")))
+                .count();
+    }
+
+    private Long derrotasTime(Time time){
+        return getTodosOsJogosPorTime()
+                .get(time)
+                .stream()
+                .filter(jogo -> !jogo.vencedor().equals(time))
+                .filter(jogo -> !jogo.vencedor().equals(new Time("-")))
+                .count();
     }
 
     private Stream<Map.Entry<Boolean, List<Jogo>>> getJogosParticionadosPorMandanteTrueVisitanteFalseFiltrado(Time time){
@@ -234,23 +269,10 @@ public class CampeonatoBrasileiroImpl {
     }
 
     private Comparator<PosicaoTabela> posicaoTabelaComparator(){
-        return (PosicaoTabela posicao1, PosicaoTabela posicao2) -> {
-            Long pontos1 = posicao1.vitorias() * 3 + posicao1.empates();
-            Long pontos2 = posicao2.vitorias() * 3 + posicao2.empates();
-            long comparePontos = pontos2.compareTo(pontos1);
-            if (comparePontos != 0)
-                return Math.toIntExact(comparePontos);
-            long compareVitorias = posicao2.vitorias().compareTo(posicao1.vitorias());
-            if (compareVitorias != 0)
-                return Math.toIntExact(compareVitorias);
-            long compareSaldo = posicao2.saldoDeGols().compareTo(posicao1.saldoDeGols());
-            if (compareSaldo != 0)
-                return Math.toIntExact(compareSaldo);
-
-            return posicao2.golsPositivos().compareTo(posicao1.golsPositivos());
-        };
+        return Comparator.comparing(PosicaoTabela::pontos, Comparator.reverseOrder())
+                .thenComparing(PosicaoTabela::vitorias, Comparator.reverseOrder())
+                .thenComparing(PosicaoTabela::saldoDeGols, Comparator.reverseOrder())
+                .thenComparing(PosicaoTabela::golsPositivos, Comparator.reverseOrder());
     }
-
-
 
 }
