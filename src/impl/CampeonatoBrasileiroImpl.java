@@ -34,8 +34,8 @@ public class CampeonatoBrasileiroImpl {
     }
 
     public List<Jogo> lerArquivo(Path file) throws IOException {
-        List<String> linhasLidas = Files.readAllLines(file);
-        return linhasLidas.stream()
+
+        return Files.lines(file)
                 .skip(1)
                 .map(linha -> linha.split(";"))
                 .map(this::obterJogo)
