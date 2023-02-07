@@ -17,8 +17,8 @@ public class Aplicacao {
 
         // obter a implementação: (ponto extra - abstrair para interface)
         CampeonatoBrasileiroImpl resultados =
-                new CampeonatoBrasileiroImpl(file, (jogo) -> jogo.data().data().getYear() == 2020 ||
-                        jogo.data().data().getYear() == 2021);
+                new CampeonatoBrasileiroImpl(file, (jogo) -> jogo.data().data().getYear() == 2020
+                || jogo.data().data().getYear() == 2021);
 
         // imprimir estatisticas
         imprimirEstatisticas(resultados);

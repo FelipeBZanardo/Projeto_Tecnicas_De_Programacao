@@ -129,6 +129,7 @@ public class CampeonatoBrasileiroImpl {
     }
 
     public Map.Entry<Resultado, Long> getPlacarMaisRepetido() {
+
         return getTodosOsPlacares()
                 .entrySet()
                 .stream()
@@ -182,15 +183,6 @@ public class CampeonatoBrasileiroImpl {
                             return lista1;}));
     }
 
-    public Map<Time, Map<Boolean, List<Jogo>>> getJogosParticionadosPorMandanteTrueVisitanteFalse() {
-        return Stream.of(getTodosOsJogosPorTime())
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> entry.getValue().stream().collect(
-                                Collectors.partitioningBy(jogo -> jogo.mandante().equals(entry.getKey()))
-                        )));
-    }
 
     public Set<PosicaoTabela> getTabela() {
 
@@ -232,36 +224,35 @@ public class CampeonatoBrasileiroImpl {
                 .count();
     }
 
-    private Stream<Map.Entry<Boolean, List<Jogo>>> getJogosParticionadosPorMandanteTrueVisitanteFalseFiltrado(Time time){
-         return getJogosParticionadosPorMandanteTrueVisitanteFalse()
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals(time))
-                .flatMap(entry -> entry.getValue().entrySet().stream());
-    }
-
     private Long golsFeitosPeloTime(Time time){
-        return getJogosParticionadosPorMandanteTrueVisitanteFalseFiltrado(time)
-                .mapToLong(entry -> {
+
+        return getTodosOsJogosPorTime()
+                .get(time)
+                .stream()
+                .mapToLong(jogo -> {
                     long somaGols = 0L;
-                    if(entry.getKey())
-                        somaGols += entry.getValue().stream().mapToLong(Jogo::mandantePlacar).sum();
-                    if(!entry.getKey())
-                        somaGols += entry.getValue().stream().mapToLong(Jogo::visitantePlacar).sum();
+                    if(jogo.mandante().equals(time))
+                        somaGols += jogo.mandantePlacar();
+                    if(jogo.visitante().equals(time))
+                        somaGols += jogo.visitantePlacar();
                     return somaGols;})
                 .sum();
     }
 
     private Long golsSofridosPeloTime(Time time){
-        return getJogosParticionadosPorMandanteTrueVisitanteFalseFiltrado(time)
-                .mapToLong(entry -> {
+
+       return getTodosOsJogosPorTime()
+                .get(time)
+                .stream()
+                .mapToLong(jogo -> {
                     long somaGolsSofridos = 0L;
-                    if(entry.getKey())
-                        somaGolsSofridos += entry.getValue().stream().mapToLong(Jogo::visitantePlacar).sum();
-                    if(!entry.getKey())
-                        somaGolsSofridos += entry.getValue().stream().mapToLong(Jogo::mandantePlacar).sum();
+                    if(jogo.mandante().equals(time))
+                        somaGolsSofridos += jogo.visitantePlacar();
+                    if(jogo.visitante().equals(time))
+                        somaGolsSofridos += jogo.mandantePlacar();
                     return somaGolsSofridos;})
                 .sum();
+
     }
 
     private Long saldoGolsDoTime(Time time){
