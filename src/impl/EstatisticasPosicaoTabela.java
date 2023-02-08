@@ -11,21 +11,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EstatisticasPosicaoTabela implements Estatistica, InterfaceEstatisticasPosicaoTabela{
-    private final List<Time> times;
-    private final List<Jogo> jogos;
-    private final int ano;
+public class EstatisticasPosicaoTabela extends Estatistica implements InterfaceEstatisticasPosicaoTabela{
+
 
     public EstatisticasPosicaoTabela(Campeonato campeonato) {
-        this.times = campeonato.getTimes();
-        this.jogos = campeonato.getJOGOS_DO_ANO();
-        this.ano = jogos.get(0).data().data().getYear();
-
+        super(campeonato);
     }
 
     @Override
     public Set<PosicaoTabela> getPosicoes() {
-        return times.stream()
+        return campeonato
+                .getTimes()
+                .stream()
                 .map(time -> new PosicaoTabela(time,
                         vitoriasTime(time),
                         derrotasTime(time),
@@ -97,14 +94,16 @@ public class EstatisticasPosicaoTabela implements Estatistica, InterfaceEstatist
     }
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoMandantes() {
-        return jogos
+        return campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .collect(Collectors.groupingBy(
                         Jogo::mandante));
     }
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoVisitante() {
-        return jogos
+        return campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .collect(Collectors.groupingBy(
                         Jogo::visitante));
@@ -122,6 +121,11 @@ public class EstatisticasPosicaoTabela implements Estatistica, InterfaceEstatist
     }
 
     public int getAno() {
-        return ano;
+        return campeonato
+                .getJOGOS_DO_ANO()
+                .get(0)
+                .data()
+                .data()
+                .getYear();
     }
 }

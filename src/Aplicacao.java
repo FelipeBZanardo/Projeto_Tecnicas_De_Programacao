@@ -18,14 +18,14 @@ public class Aplicacao {
         Path file = Path.of("campeonato-brasileiro.csv");
 
         //filtro para o ano do campeonato
-        Predicate<Jogo> filtro = (jogo) -> jogo.data().data().getYear() == 2019;
-                //|| jogo.data().data().getYear() == 2021;
+        Predicate<Jogo> filtro = (jogo) -> jogo.data().data().getYear() == 2020
+                || jogo.data().data().getYear() == 2021;
 
         //Cria o Campeonato
         Campeonato campeonato = new Campeonato(filtro, Arquivo.lerArquivo(file));
 
         // imprimir estatisticas
-        EstatisticasGerais estatisticasGerais = new EstatisticasGerais(campeonato.getJOGOS_DO_ANO());
+        EstatisticasGerais estatisticasGerais = new EstatisticasGerais(campeonato);
         EstatisticasGeraisView estatisticasGeraisView = new EstatisticasGeraisView();
         estatisticasGeraisView.imprimir(estatisticasGerais);
 

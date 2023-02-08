@@ -9,9 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatistica {
-
-    private final List<Jogo> jogos;
+public class EstatisticasGerais extends Estatistica implements InterfaceEstatisticasGerais {
     private final Long totalDeGols;
     private final Long totalDeJogos;
     private final Double mediaDeGols;
@@ -23,11 +21,11 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     private Long totalVitoriasVisitante;
     private Long totalEmpates;
 
-    public EstatisticasGerais(List<Jogo> jogos) {
-        this.jogos = jogos;
-        this.totalDeGols = getEstatisticasPorJogo(jogos).getSum();
-        this.totalDeJogos = getEstatisticasPorJogo(jogos).getCount();
-        this.mediaDeGols = getEstatisticasPorJogo(jogos).getAverage();
+    public EstatisticasGerais(Campeonato campeonato) {
+        super(campeonato);
+        this.totalDeGols = getEstatisticasPorJogo(campeonato.getJOGOS_DO_ANO()).getSum();
+        this.totalDeJogos = getEstatisticasPorJogo(campeonato.getJOGOS_DO_ANO()).getCount();
+        this.mediaDeGols = getEstatisticasPorJogo(campeonato.getJOGOS_DO_ANO()).getAverage();
         setPlacarMaisRepetido();
         setPlacarMenosRepetido();
         setJogosCom3OuMaisGols();
@@ -37,9 +35,11 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
         setTotalEmpates();
     }
 
+
     @Override
     public IntSummaryStatistics getEstatisticasPorJogo(List<Jogo> jogos) {
-        return jogos
+        return campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .mapToInt(jogo -> jogo.mandantePlacar() + jogo.visitantePlacar())
                 .summaryStatistics();
@@ -55,7 +55,7 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     }
 
     private void setPlacarMaisRepetido() {
-        this.placarMaisRepetido = contagemDeCadaResultado(this.jogos)
+        this.placarMaisRepetido = contagemDeCadaResultado(this.campeonato.getJOGOS_DO_ANO())
                 .entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue())
@@ -71,7 +71,7 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     }
 
     private void setPlacarMenosRepetido() {
-        this.placarMenosRepetido = contagemDeCadaResultado(this.jogos)
+        this.placarMenosRepetido = contagemDeCadaResultado(this.campeonato.getJOGOS_DO_ANO())
                 .entrySet()
                 .stream()
                 .min(Map.Entry.comparingByValue())
@@ -83,7 +83,8 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     }
 
     private void setJogosCom3OuMaisGols() {
-        this.jogosCom3OuMaisGols = this.jogos
+        this.jogosCom3OuMaisGols = this.campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .filter(jogo -> (jogo.mandantePlacar() + jogo.visitantePlacar()) >= 3)
                 .count();
@@ -94,7 +95,8 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     }
 
     private void setJogosComMenos3Gols() {
-        this.jogosComMenos3Gols = this.jogos
+        this.jogosComMenos3Gols = this.campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .filter(jogo -> (jogo.mandantePlacar() + jogo.visitantePlacar()) < 3)
                 .count();
@@ -105,7 +107,8 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     }
 
     private void setTotalVitoriasMandante() {
-        this.totalVitoriasMandante = this.jogos
+        this.totalVitoriasMandante = this.campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .filter(jogo -> jogo.mandantePlacar() > jogo.visitantePlacar())
                 .count();
@@ -116,7 +119,8 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     }
 
     private void setTotalVitoriasVisitante() {
-        this.totalVitoriasVisitante = this.jogos
+        this.totalVitoriasVisitante = this.campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .filter(jogo -> jogo.mandantePlacar() < jogo.visitantePlacar())
                 .count();
@@ -127,7 +131,8 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     }
 
     public void setTotalEmpates() {
-        this.totalEmpates = this.jogos
+        this.totalEmpates = this.campeonato
+                .getJOGOS_DO_ANO()
                 .stream()
                 .filter(jogo -> Objects.equals(jogo.mandantePlacar(), jogo.visitantePlacar()))
                 .count();
@@ -144,4 +149,6 @@ public class EstatisticasGerais implements InterfaceEstatisticasGerais, Estatist
     public Double getMediaDeGols() {
         return mediaDeGols;
     }
+
+
 }
