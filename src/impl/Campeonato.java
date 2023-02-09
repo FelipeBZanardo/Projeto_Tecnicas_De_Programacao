@@ -43,8 +43,4 @@ public class Campeonato implements InterfaceCampeonato{
     public List<Jogo> getJOGOS_DO_ANO() {
         return JOGOS_DO_ANO;
     }
-
-    public List<Time> getTimes() {
-        return times;
-    }
 }

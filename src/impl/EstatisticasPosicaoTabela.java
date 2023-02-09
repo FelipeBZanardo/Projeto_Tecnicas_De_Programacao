@@ -21,7 +21,7 @@ public class EstatisticasPosicaoTabela extends Estatistica implements InterfaceE
     @Override
     public Set<PosicaoTabela> getPosicoes() {
         return campeonato
-                .getTimes()
+                .obterTimes()
                 .stream()
                 .map(time -> new PosicaoTabela(time,
                         vitoriasTime(time),
