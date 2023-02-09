@@ -1,8 +1,24 @@
 # Projeto final | SANTANDER
 
-A ideia desse exercicio é implementar os métodos necessários na classe **CampeonatoBrasileiroImpl.java** para poder gerar os arquivos necessários
+A ideia desse exercício é implementar os métodos necessários na classe **CampeonatoBrasileiroImpl.java** para poder gerar os arquivos necessários.
 
-Um exemplo de resposta seria:
+## Branch Master:
+  - Contém a maioria dos métodos originais do exercício, excluindo apenas os que não foram utilizados e acrescentando outros necessários.
+  - A implementação seguiu a ordem e a distribuição de exemplo
+
+## Branch feature/uso_interface:
+  - O exercício foi implementado na tentativa de separar responsabilidades de cada classe
+  - Uso de abstração por interface
+  - Uso de herança
+
+## Regras de desempate:
+  - Foi criado um Comparator para definição das regras:
+   1. Pontuação (3 pontos para vitória e 1 ponto para empate)
+   2. Maior número de vitórias
+   3. Maior número de saldo de gols
+   4. Maior número de gols feitos
+
+## Um exemplo de resposta seria:
 
 ```sh
 Estatisticas (Total de gols) - 944
