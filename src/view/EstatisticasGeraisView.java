@@ -1,27 +1,30 @@
 package view;
 
+import dominio.enums.MaisOuMenos;
+import dominio.enums.TipoPlacar;
+import dominio.enums.TipoResultado;
 import impl.EstatisticasGerais;
 
 public class EstatisticasGeraisView implements InterfaceView<EstatisticasGerais> {
 
     @Override
     public void imprimir(EstatisticasGerais estatistica) {
-        System.out.println("Estatisticas (Total de gols) - " + estatistica.getTotalDeGols());
-        System.out.println("Estatisticas (Total de jogos) - " + estatistica.getTotalDeJogos());
-        System.out.println("Estatisticas (Media de gols) - " + estatistica.getMediaDeGols());
+        System.out.println("Estatisticas (Total de gols) - " + estatistica.getEstatisticasPorJogo().getSum());
+        System.out.println("Estatisticas (Total de jogos) - " + estatistica.getEstatisticasPorJogo().getCount());
+        System.out.println("Estatisticas (Media de gols) - " + estatistica.getEstatisticasPorJogo().getAverage());
         System.out.println("Estatisticas (Placar mais repetido) - "
-                + estatistica.getPlacarMaisRepetido().getKey() + " ("
-                + estatistica.getPlacarMaisRepetido().getValue() + " jogo(s))");
+                + estatistica.getPlacarRepetido(TipoPlacar.MAIS_REPETIDO).getKey() + " ("
+                + estatistica.getPlacarRepetido(TipoPlacar.MAIS_REPETIDO).getValue() + " jogo(s))");
 
         System.out.println("Estatisticas (Placar menos repetido) - "
-                + estatistica.getPlacarMenosRepetido().getKey() + " ("
-                + estatistica.getPlacarMenosRepetido().getValue() + " jogo(s))");
+                + estatistica.getPlacarRepetido(TipoPlacar.MENOS_REPETIDO).getKey() + " ("
+                + estatistica.getPlacarRepetido(TipoPlacar.MENOS_REPETIDO).getValue() + " jogo(s))");
 
-        System.out.println("Estatisticas (3 ou mais gols) - " + estatistica.getJogosCom3OuMaisGols());
-        System.out.println("Estatisticas (-3 gols) - " + estatistica.getJogosComMenos3Gols());
+        System.out.println("Estatisticas (3 ou mais gols) - " + estatistica.getJogosComMaisOuMenosDe(MaisOuMenos.MAIS, 2));
+        System.out.println("Estatisticas (-3 gols) - " + estatistica.getJogosComMaisOuMenosDe(MaisOuMenos.MENOS, 3));
 
-        System.out.println("Estatisticas (Vitorias Fora de casa) - " + estatistica.getTotalVitoriasVisitante());
-        System.out.println("Estatisticas (Vitorias Em casa) - " + estatistica.getTotalVitoriasMandante());
-        System.out.println("Estatisticas (Empates) - " + estatistica.getTotalEmpates());
+        System.out.println("Estatisticas (Vitorias Fora de casa) - " + estatistica.getTotalDe(TipoResultado.VITORIA_VISITANTE));
+        System.out.println("Estatisticas (Vitorias Em casa) - " + estatistica.getTotalDe(TipoResultado.VITORIA_MANDANTE));
+        System.out.println("Estatisticas (Empates) - " + estatistica.getTotalDe(TipoResultado.EMPATE));
     }
 }

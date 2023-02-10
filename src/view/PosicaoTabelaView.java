@@ -8,7 +8,7 @@ public class PosicaoTabelaView implements InterfaceView<EstatisticasPosicaoTabel
     @Override
     public void imprimir(EstatisticasPosicaoTabela estatistica) {
         System.out.println();
-        System.out.println("## TABELA CAMPEONADO BRASILEIRO: " + estatistica.getAno() + " ##");
+        System.out.println("## TABELA CAMPEONADO BRASILEIRO: ##");
         int colocacao = 1;
         for (PosicaoTabela posicao : estatistica.getPosicoes()) {
             System.out.println(colocacao +". " + posicao);

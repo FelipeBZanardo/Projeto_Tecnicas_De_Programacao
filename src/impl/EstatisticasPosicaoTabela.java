@@ -119,13 +119,4 @@ public class EstatisticasPosicaoTabela extends Estatistica implements InterfaceE
                             lista1.addAll(lista2);
                             return lista1;}));
     }
-
-    public int getAno() {
-        return campeonato
-                .getJOGOS_DO_ANO()
-                .get(0)
-                .data()
-                .data()
-                .getYear();
-    }
 }

@@ -1,13 +1,15 @@
 package impl;
 
-import dominio.Jogo;
+import dominio.enums.MaisOuMenos;
 import dominio.Resultado;
-
+import dominio.enums.TipoPlacar;
+import dominio.enums.TipoResultado;
 import java.util.IntSummaryStatistics;
-import java.util.List;
 import java.util.Map;
 
 public interface InterfaceEstatisticasGerais {
-    IntSummaryStatistics getEstatisticasPorJogo(List<Jogo> jogos);
-    Map<Resultado, Long> contagemDeCadaResultado(List<Jogo> jogos);
+    IntSummaryStatistics getEstatisticasPorJogo();
+    Map.Entry<Resultado, Long> getPlacarRepetido(TipoPlacar tipoPlacar);
+    Long getJogosComMaisOuMenosDe(MaisOuMenos maisOuMenos, int gols);
+    Long getTotalDe(TipoResultado tipoResultado);
 }
