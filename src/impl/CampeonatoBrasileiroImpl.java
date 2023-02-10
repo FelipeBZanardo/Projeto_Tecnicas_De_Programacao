@@ -261,10 +261,10 @@ public class CampeonatoBrasileiroImpl {
     }
 
     private Comparator<PosicaoTabela> posicaoTabelaComparator(){
-        return Comparator.comparing(PosicaoTabela::pontos, Comparator.reverseOrder())
-                .thenComparing(PosicaoTabela::vitorias, Comparator.reverseOrder())
-                .thenComparing(PosicaoTabela::saldoDeGols, Comparator.reverseOrder())
-                .thenComparing(PosicaoTabela::golsPositivos, Comparator.reverseOrder());
+        return Comparator.comparing(PosicaoTabela::pontos, Comparator.reverseOrder())       //primeiro critério: pontuação
+                .thenComparing(PosicaoTabela::vitorias, Comparator.reverseOrder())          //segundo critério: maior número de vitórias
+                .thenComparing(PosicaoTabela::saldoDeGols, Comparator.reverseOrder())       //terceiro critério: maior número de saldo de gols
+                .thenComparing(PosicaoTabela::golsPositivos, Comparator.reverseOrder());    //quarto critério: maior número de gols feitos
     }
 
 }
