@@ -9,19 +9,17 @@ import java.util.stream.Stream;
 
 public class Campeonato implements InterfaceCampeonato{
 
-    private final List<Time> times;
     private final Predicate<Jogo> FILTRO_ANO;
-    private final List<Jogo> JOGOS_DO_ANO;
+    private final List<Jogo> jogosDoAno;
 
     public Campeonato(Predicate<Jogo> filtroAno, Stream<String> dadosComOsJogos) {
         FILTRO_ANO = filtroAno;
-        JOGOS_DO_ANO = obterJogosDoAno(dadosComOsJogos);
-        times = obterTimes();
+        this.jogosDoAno = obterJogosDoAno(dadosComOsJogos);
     }
 
     @Override
     public List<Time> obterTimes() {
-        return this.JOGOS_DO_ANO
+        return this.jogosDoAno
                 .stream()
                 .map(Jogo::mandante)
                 .collect(Collectors.toSet())
@@ -39,8 +37,7 @@ public class Campeonato implements InterfaceCampeonato{
                 .toList();
     }
 
-
-    public List<Jogo> getJOGOS_DO_ANO() {
-        return JOGOS_DO_ANO;
+    public List<Jogo> getJogosDoAno() {
+        return jogosDoAno;
     }
 }

@@ -95,7 +95,7 @@ public class EstatisticasPosicaoTabela extends Estatistica implements InterfaceE
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoMandantes() {
         return campeonato
-                .getJOGOS_DO_ANO()
+                .getJogosDoAno()
                 .stream()
                 .collect(Collectors.groupingBy(
                         Jogo::mandante));
@@ -103,7 +103,7 @@ public class EstatisticasPosicaoTabela extends Estatistica implements InterfaceE
 
     private Map<Time, List<Jogo>> getTodosOsJogosPorTimeComoVisitante() {
         return campeonato
-                .getJOGOS_DO_ANO()
+                .getJogosDoAno()
                 .stream()
                 .collect(Collectors.groupingBy(
                         Jogo::visitante));

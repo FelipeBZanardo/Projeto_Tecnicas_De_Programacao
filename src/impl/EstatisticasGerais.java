@@ -18,7 +18,7 @@ public class EstatisticasGerais extends Estatistica implements InterfaceEstatist
     @Override
     public IntSummaryStatistics getEstatisticasPorJogo() {
         return campeonato
-                .getJOGOS_DO_ANO()
+                .getJogosDoAno()
                 .stream()
                 .mapToInt(jogo -> jogo.mandantePlacar() + jogo.visitantePlacar())
                 .summaryStatistics();
@@ -26,7 +26,7 @@ public class EstatisticasGerais extends Estatistica implements InterfaceEstatist
 
     public Map<Resultado, Long> contagemDeCadaResultado() {
         return campeonato
-                .getJOGOS_DO_ANO()
+                .getJogosDoAno()
                 .stream()
                 .collect(Collectors.groupingBy(
                         jogo -> new Resultado(jogo.mandantePlacar(), jogo.visitantePlacar()),
@@ -42,28 +42,10 @@ public class EstatisticasGerais extends Estatistica implements InterfaceEstatist
                 .get();
     }
 
-    /*@Override
-    public Long getJogosComNoMinimo(int gols) {
-        return this.campeonato
-                .getJOGOS_DO_ANO()
-                .stream()
-                .filter(jogo -> (jogo.mandantePlacar() + jogo.visitantePlacar()) >= gols)
-                .count();
-    }
-
-    @Override
-    public Long getJogosComMenosDe(int gols) {
-        return this.campeonato
-                .getJOGOS_DO_ANO()
-                .stream()
-                .filter(jogo -> (jogo.mandantePlacar() + jogo.visitantePlacar()) < gols)
-                .count();
-    }*/
-
     @Override
     public Long getJogosComMaisOuMenosDe(MaisOuMenos maisOuMenos, int gols) {
         return this.campeonato
-                .getJOGOS_DO_ANO()
+                .getJogosDoAno()
                 .stream()
                 .mapToLong(jogo -> jogo.mandantePlacar() + jogo.visitantePlacar())
                 .filter(quantidade -> {
@@ -77,7 +59,7 @@ public class EstatisticasGerais extends Estatistica implements InterfaceEstatist
     @Override
     public Long getTotalDe(TipoResultado tipoResultado) {
         return this.campeonato
-                .getJOGOS_DO_ANO()
+                .getJogosDoAno()
                 .stream()
                 .filter(tipoResultado.getFiltro())
                 .count();
