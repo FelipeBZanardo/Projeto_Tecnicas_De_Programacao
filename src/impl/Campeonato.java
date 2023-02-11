@@ -14,7 +14,7 @@ public class Campeonato implements InterfaceCampeonato{
 
     public Campeonato(Predicate<Jogo> filtroAno, Stream<String> dadosComOsJogos) {
         FILTRO_ANO = filtroAno;
-        this.jogosDoAno = obterJogosDoAno(dadosComOsJogos);
+        this.jogosDoAno = obterJogosPeloAno(dadosComOsJogos);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class Campeonato implements InterfaceCampeonato{
     }
 
     @Override
-    public List<Jogo> obterJogosDoAno(Stream<String> dadosComOsJogos) {
+    public List<Jogo> obterJogosPeloAno(Stream<String> dadosComOsJogos) {
         return dadosComOsJogos
                 .skip(1)
                 .map(linha -> linha.split(";"))
@@ -37,6 +37,7 @@ public class Campeonato implements InterfaceCampeonato{
                 .toList();
     }
 
+    @Override
     public List<Jogo> getJogosDoAno() {
         return jogosDoAno;
     }

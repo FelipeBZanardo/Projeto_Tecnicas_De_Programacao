@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 
 public interface InterfaceCampeonato {
     List<Time> obterTimes();
-    List<Jogo> obterJogosDoAno(Stream<String> dadosComOsJogos);
+    List<Jogo> obterJogosPeloAno(Stream<String> dadosComOsJogos);
+
+    List<Jogo> getJogosDoAno();
 
 }

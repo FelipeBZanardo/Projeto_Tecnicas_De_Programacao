@@ -1,4 +1,5 @@
 package view;
+import impl.Estatistica;
 import impl.EstatisticasGerais;
 
 import static dominio.enums.MaisOuMenos.MAIS;

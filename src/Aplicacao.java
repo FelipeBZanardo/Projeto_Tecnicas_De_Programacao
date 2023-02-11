@@ -1,6 +1,7 @@
 import Persistence.Arquivo;
 import dominio.Jogo;
 import impl.Campeonato;
+import impl.Estatistica;
 import impl.EstatisticasGerais;
 import impl.EstatisticasPosicaoTabela;
 import view.EstatisticasGeraisView;
@@ -24,7 +25,7 @@ public class Aplicacao {
         //Cria o Campeonato
         Campeonato campeonato = new Campeonato(filtro, Arquivo.lerArquivo(file));
 
-        // imprimir estatisticas
+        // imprimir estatísticas
         EstatisticasGerais estatisticasGerais = new EstatisticasGerais(campeonato);
         EstatisticasGeraisView estatisticasGeraisView = new EstatisticasGeraisView();
         estatisticasGeraisView.imprimir(estatisticasGerais);

@@ -24,7 +24,7 @@ public class EstatisticasGerais extends Estatistica implements InterfaceEstatist
                 .summaryStatistics();
     }
 
-    public Map<Resultado, Long> contagemDeCadaResultado() {
+    private Map<Resultado, Long> contagemDeCadaResultado() {
         return campeonato
                 .getJogosDoAno()
                 .stream()
